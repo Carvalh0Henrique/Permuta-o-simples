@@ -1,28 +1,48 @@
-// Função para calcular a permutação de um número
-function calcularPermutacao(n) {
-    if (n < 0) {
-        return 'Erro: Não é possível calcular permutações de números negativos.';
+function fatorial(num) {
+    if (num === 0 || num === 1)
+        return 1;
+    for (let i = num - 1; i >= 1; i--) {
+        num *= i;
     }
-    let resultado = 1;
-    for (let i = 2; i <= n; i++) {
-        resultado *= i;
-    }
-    return resultado;
+    return num;
 }
 
-// Adiciona um ouvinte de evento para o formulário para interceptar o envio
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.querySelector('form');
-    form.addEventListener('submit', function(event) {
-        event.preventDefault(); // Impede o envio do formulário
+function calcularPermutacaoSimples() {
+    let num = parseInt(document.getElementById('inputNum').value);
+    let resultado = fatorial(num);
+    let formula = num + "! = " + resultado;
 
-        const numero = parseInt(document.getElementById('inputNum').value);
-        if (isNaN(numero)) {
-            document.getElementById('result').innerText = 'Por favor, insira um número válido.';
-            return;
+    document.getElementById('resultNum').innerHTML = "Resultado: " + resultado;
+    document.getElementById('formulaNum').innerHTML = "Fórmula utilizada: " + formula;
+}
+
+function calcularAnagramas() {
+    let palavra = document.getElementById('inputWord').value;
+    let numLetras = palavra.length;
+    let letrasRepetidas = {};
+    for (let i = 0; i < numLetras; i++) {
+        let letra = palavra[i];
+        if (letra in letrasRepetidas) {
+            letrasRepetidas[letra]++;
+        } else {
+            letrasRepetidas[letra] = 1;
         }
+    }
 
-        const permutacao = calcularPermutacao(numero);
-        document.getElementById('result').innerText = `A permutação de ${numero} é: ${permutacao}`;
-    });
-});
+    let resultado = fatorial(numLetras);
+    for (let key in letrasRepetidas) {
+        resultado /= fatorial(letrasRepetidas[key]);
+    }
+
+    let formula = numLetras + "! / ";
+    for (let key in letrasRepetidas) {
+        formula += letrasRepetidas[key] + "! * ";
+    }
+    formula = formula.slice(0, -3);
+
+    document.getElementById('resultWord').innerHTML = "Resultado: " + resultado;
+    document.getElementById('formulaWord').innerHTML = "Fórmula utilizada: " + formula;
+}
+
+document.getElementById('calc').addEventListener('click', calcularPermutacaoSimples);
+document.getElementById('calcWord').addEventListener('click', calcularAnagramas);
